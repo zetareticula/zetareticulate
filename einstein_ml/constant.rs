@@ -36,13 +36,26 @@ use std::sync::Arc;
 use std::time::{Duration, Instant};
 use std::{fmt::Debug, io::Write, mem::size_of};
 use std::{result::Result as StdResult};
+use std::{str::FromStr, sync::Mutex};
 use std::io::Bytes;
+use std::io::Read;
+use std::io::Result;
+
+
+
+
+use einsteindb_traits::errors::{
+    einsteindbErrorKind,
+    Result,
+};
 
 
 pub use einsteindb_traits::errors::{
     einsteindbErrorKind,
     Result,
 };
+pub use einsteindb_traits; // Add this line to import the missing module
+
 
 
 pub use topograph::{
@@ -456,8 +469,11 @@ impl TopographProjector {
 impl Projector for TopographProjector {
     fn project(&self, _: &berolina_sql::Statement) -> Result<QueryOutput, E> {
         self.project_without_rows()
-    }
+    
+    }   
 }
+
+
 
 pub fn new_with_duration(spec: Rc<FindSpec>, duration: Duration) -> ConstantProjector {
     let results_factory = Box::new(move || {
@@ -468,8 +484,24 @@ pub fn new_with_duration(spec: Rc<FindSpec>, duration: Duration) -> ConstantProj
         results.add_row(vec![DatumType::Duration(duration)]);
         results
     });
+
+
+    ConstantProjector::new(spec, results_factory)
+
+}
+
+pub fn new_with_date(spec: Rc<FindSpec>, date: Date) -> ConstantProjector {
+    let results_factory = Box::new(move || {
+        let mut results = QueryResults::new(
+            Rows::new(vec![]),
+            vec![],
+        );
+        results.add_row(vec![DatumType::Date(date)]);
+        results
+    });
     ConstantProjector::new(spec, results_factory)
 }
+
 
 pub fn new_with_date(spec: Rc<FindSpec>, date: Date) -> ConstantProjector {
     let results_factory = Box::new(move || {
@@ -688,6 +720,7 @@ mod tests {
         time::{Duration, SystemTime},
     };
     use uuid::Uuid;
+use crate::datum::DatumType; // Add this line
 }
 
 
@@ -740,23 +773,6 @@ pub fn new_with_reg_type(spec: Rc<FindSpec>, reg_type: RegType) -> ConstantProje
     ConstantProjector::new(spec, results_factory)
 }
 
-///Haraka: This is a hack to get around the fact that we don't have a way to create a
-///       `RegType` from a `DatumType`.
-/// 
-  //   HARAKA_REG_TYPE: Sized {
-
-    //   fn new(name: &str, oid: Oid, typename: &str,
-    //          typmod: Option<i32>,
-    //          array_type: Option<Oid>,
-    //          regproc: Option<RegProcedure>,
-    //          regdummy: Option<RegProcedure>,
-    //          regupdate: Option<RegProcedure>,
-    //          reginsert: Option<RegProcedure>,
-    //          regopt: Option<RegProcedure>,
-    //          regdelete: Option<RegProcedure>,
-    //          regacl: Option<RegProcedure>,
-    //          regdynamic: Option<RegProcedure>,
-    //          regtruncate: Option<RegProcedure>,
 
 
 pub fn new_with_reg_type_haraka(spec: Rc<FindSpec>, reg_type: RegType) -> ConstantProjector {
@@ -771,6 +787,17 @@ pub fn new_with_reg_type_haraka(spec: Rc<FindSpec>, reg_type: RegType) -> Consta
     ConstantProjector::new(spec, results_factory)
 }
 
+pub fn new_with_reg_procedure(spec: Rc<FindSpec>, reg_procedure: RegProcedure) -> ConstantProjector {
+    let results_factory = Box::new(move || {
+        let mut results = QueryResults::new(
+            Rows::new(vec![]),
+            vec![],
+        );
+        results.add_row(vec![DatumType::RegProcedure(reg_procedure)]);
+        results
+    });
+    ConstantProjector::new(spec, results_factory)
+}
 
 
 impl HARAKA_REG_TYPE for DatumType {
@@ -1037,4 +1064,19 @@ macro_rules! aeskeygenassist {
             dst.assume_init()
         }
     }}
+}
+
+#[inline(always)]
+pub(crate) fn aeskeygenassist_1(rkey: &mut U64x2, tmp: &mut U64x2) {
+    *rkey = aeskeygenassist!(rkey, 1, tmp);
+}
+
+#[inline(always)]
+pub(crate) fn aeskeygenassist_2(rkey: &mut U64x2, tmp: &mut U64x2) {
+    *rkey = aeskeygenassist!(rkey, 2, tmp);
+}
+
+#[inline(always)]
+pub(crate) fn aeskeygenassist_3(rkey: &mut U64x2, tmp: &mut U64x2) {
+    *rkey = aeskeygenassist!(rkey, 3, tmp);
 }

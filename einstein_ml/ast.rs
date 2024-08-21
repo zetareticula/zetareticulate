@@ -36,92 +36,33 @@ pub type TypeList = Vec<Type>;
 pub type TypeIdList = Vec<TypeId>;
 pub type TypeIdListList = Vec<TypeIdList>;
 
-
-//! # AST
-//!
-//! The AST is the core of the compiler. It is a tree of nodes that represents the
-//! program. Each node has a type and a list of children. The type of a node is
-//! either a primitive type (e.g. `int`) or a user-defined type (e.g. `Foo`).
-//!     let foo = 5;
-//!    let bar = true;
-//!   let baz = "test";
-//!
-
-///!cl-user(2): (require :prolog)
-// t
-// cl-user(3): (use-package :prolog)
-// t
-// cl-user(4): (<-- (rev-member ?item (? . ?rest))
-//               (rev-member ?item ?rest))
-// rev-member
-// cl-user(5): (<- (rev-member ?item (?item . ?)))
-// rev-member
-// cl-user(6): (leash rev-member 2)
-// t
-// cl-user(7): (?- (rev-member ?animal (dog cat fish)))
-// [1] Entering rev-member/2 {Unbound 1000fe7cb1} (dog cat fish)
-//   [2] Entering rev-member/2 {Unbound 1000fe7cb1} (cat fish)
-//     [3] Entering rev-member/2 {Unbound 1000fe7cb1} (fish)
-//       [4] Entering rev-member/2 {Unbound 1000fe7cb1} ()
-//       [4] Failed rev-member/2
-//     [3] Succeeded rev-member/2 fish (fish)
-//   [2] Succeeded rev-member/2 fish (cat fish)
-// [1] Succeeded rev-member/2 fish (dog cat fish) ?animal="fish" <ENTER>
-// [1] Backtracking into rev-member/2
-//  [2] Backtracking into rev-member/2
-//   [3] Backtracking into rev-member/2
-//   [3] Failed rev-member/2
-//  [2] Succeeded rev-member/2 cat (cat fish)
-// [1] Succeeded rev-member/2 cat (dog cat fish)
-// ?animal = cat <ENTER>
-// [1] Backtracking into rev-member/2
-//  [2] Backtracking into rev-member/2
-//  [2] Failed rev-member/2
-// [1] Succeeded rev-member/2 dog (dog cat fish)
-// ?animal = dog <ENTER>
-// [1] Backtracking into rev-member/2
-// [1] Failed rev-member/2
-// No.
-// cl-user(8):
-
-use ::EinsteinDB;
+pub type SolitonidList = Vec<Solitonid>;   
+pub type SolitonList = Vec<Soliton>;
+pub type SolitonTypeList = Vec<SolitonType>;
+pub type SolitonValueList = Vec<SolitonValue>;
 
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub enum LispOperators {
-    /// `(=)`
-    /// `(= a b)`
-    /// `(= a b c)`
-    /// `(= a b c d)`
-
-    /// `(<)`
-    /// `(< a b)`
-    /// `(< a b c)`
-    /// `(< a b c d)`
-    /// `(< a b c d e)`
-    /// `(< a b c d e f)`,
-
-    Equal,
-    LessThan,
-    LessThanOrEqual,
-    GreaterThan,
-    GreaterThanOrEqual,
-    NotEqual,
-    /// `(+)`
-    /// `(+ a b)`
-    /// `(+ a b c)`
-    /// `(+ a b c d)`
-    /// `(+ a b c d e)`
-
-    Add,
-    /// `(-)`
-    /// `(- a b)`
-    /// `(- a b c)`
-
-    Subtract,
-
-
+pub enum SolitonValue {
+    Int(i64),
+    Float(f64),
+    Bool(bool),
+    String(String),
+    Char(char),
+    Unit,
+    Option(Box<SolitonValue>),
+    List(Vec<SolitonValue>),
+    Map(HashMap<SolitonValue, SolitonValue>),
+    Set(HashSet<SolitonValue>),
+    Tuple(Vec<SolitonValue>),
+    Struct(Solitonid, Vec<SolitonValue>),
+    Enum(Solitonid, Solitonid, Vec<SolitonValue>),
+    Function(Vec<Solitonid>, Box<SolitonValue>),
+    Closure(Vec<Solitonid>, Box<SolitonValue>, Rc<RefCell<Environment>>),
+    Builtin(Builtin),
+    UserDefined(UserDefined),
 }
+
 
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -265,7 +206,6 @@ pub enum TypeKind< T > {
     Nil,
     Cons,
     Atom,
-    Quote,
     Quasiquote,
     Unquote,
     UnquoteSplicing,

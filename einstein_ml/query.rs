@@ -11,10 +11,9 @@
 
 use super::*;
 use crate::error::{Error, Result};
-use crate::parser::{Parser, ParserError};
-use crate::value::{Value, ValueType};
-use crate::{ValueRef, ValueRefMut};
-use itertools::Itertools;
+use crate::util::{Either, util_module}; // Add the missing util module here
+use std::collections::BTreeMap;
+use std::fmt;
 
 use std;
 use std::collections::{
@@ -58,6 +57,33 @@ use std::{
 
 
 
+pub type SrcVarName = String;          // Do not include the required syntactic '$'.
+
+#[derive(Clone, PartialEq, Eq, Hash, PartialOrd, Ord)]
+pub struct Variable(pub Rc<PlainShelling>);
+
+impl Variable {
+    pub fn as_str(&self) -> &str {
+        self.0.as_ref().0.as_str()
+    }
+
+    pub fn to_string(&self) -> String {
+        self.0.as_ref().0.clone()
+    }
+
+    pub fn name(&self) -> PlainShelling {
+        self.0.as_ref().clone()
+    }
+
+    /// Return a new `Variable`, assuming that the provided string is a valid name.
+    pub fn from_valid_name(name: &str) -> Variable {
+        let s = PlainShelling::plain(name);
+        assert!(s.is_var_shelling());
+        Variable(Rc::new(s))
+    }
+}
+
+
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Context {
@@ -85,15 +111,8 @@ impl fmt::Debug for Hash {
 
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{}", self.to_string())
-    }
-
-    fn fmt_display(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}", self.to_string())
-        
-
-    }
+    }   
 }
-
 
 impl Hash {
     pub fn new(hash_type: HashType, hash_size: usize, hash_bits: usize, hash_bytes: usize) -> Self {
@@ -1138,7 +1157,7 @@ impl FindSpec {
         !self.is_unit_limited()
     }
 
-    pub fn columns<'s>(&'s self) -> Box<Iterator<Item=&Element> + 's> {
+    pub fn elements(&self) -> Box<dyn Iterator<Item = &Element>> {
         use self::FindSpec::*;
         match self {
             &FindScalar(ref e) => Box::new(std::iter::once(e)),

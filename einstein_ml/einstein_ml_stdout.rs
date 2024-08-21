@@ -25,6 +25,39 @@
 //     };
 
 
+use std::borrow::Cow;
+use std::io;
+use std::ops::{Deref, DerefMut};
+
+use berolina_sql::{
+    parser::Parser,
+    value::{Value, ValueType},
+    error::{Error, Result},
+    parser::ParserError,
+    value::{ValueRef, ValueRefMut},
+    fdb_traits::FdbTrait,
+    fdb_traits::FdbTraitImpl,
+    pretty,
+    io,
+    convert::{TryFrom, TryInto},
+    ops::{Deref, DerefMut},
+    sync::{Arc, Mutex},
+};
+
+
+
+
+pub struct EinsteinDb<T: FdbTrait> {
+    db: T,
+}
+
+
+impl<T: FdbTrait> EinsteinDb<T> {
+    pub fn new(db: T) -> Self {
+        EinsteinDb { db }
+    }
+}
+
 
 
 // #[macro_export]
@@ -78,22 +111,15 @@ macro_rules! einsteindb_macro_impl {
 
 
 
-use std::borrow::Cow;
-use std::io;
-use std::ops::{Deref, DerefMut};
-
-use chrono::SecondsFormat;
-use itertools::Itertools;
-use pretty;
-
-use einstein_db_alexandrov_processing::{
-    index::{
-        Index,
-        IndexIterator,
-        IndexIteratorOptions,
-        IndexIteratorOptionsBuilder,
-    },
-};
+#[macro_export]
+macro_rules! einsteindb_macro_impl {
+    ($($tokens:tt)*) => {
+        $crate::einsteindb_macro_impl!($($tokens)*)
+    };
+    ($($tokens:tt)*) => {
+        $crate::einsteindb_macro_impl!($($tokens)*)
+    };
+    
 
 
 use berolina_sql::{
@@ -112,10 +138,10 @@ use berolina_sql::{
 };
 
 
-
 pub struct EinsteinDb<T: FdbTrait> {
     db: T,
 }
+
 
 
 impl<T: FdbTrait> EinsteinDb<T> {
@@ -154,6 +180,12 @@ impl<T: FdbTrait> EinsteinDb<T> {
     }
 }
 
+
+impl<T: FdbTrait> EinsteinDb<T> {
+    pub fn get_db(&self) -> &T {
+        &self.db
+    }
+}
 /// #### EinsteinDB
 /// `EinsteinDb` is a wrapper around `FdbTrait` that provides a simple interface to the EinsteinDB database.
 /// 
@@ -208,6 +240,10 @@ impl Value<T> {
         self.write_pretty(width, &mut out)?;
         Ok(String::from_utf8_lossy(&out).into_owned())
     }
+
+
+
+
 
     /// Write a pretty string representation of this `Value` to the given `Write`.
     /// Returns the number of bytes written.
@@ -296,20 +332,7 @@ impl Value<T> {
     }
 
     /// Return a pretty string representation of this `Value`.
-    ///
-    /// This is a convenience function that calls `to_pretty` on the `Value`
-    /// and then returns the result as a `String`.
-    ///
-    /// # Examples
-    ///
-    ///     let v = Value::from_str("[1, 2, 3]").unwrap();
-    ///     assert_eq!(v.to_pretty_string(), "[1, 2, 3]");
-    ///
-    ///    let v = Value::from_str("{\"a\": 1, \"b\": 2}").unwrap();
-    ///   assert_eq!(v.to_pretty_string(), "{\"a\": 1, \"b\": 2}");
-    ///
-
-    ///
+    /// This pretty printing impleEinsteinDBion is optimized for einstein_mlqueries
     pub fn to_pretty_string(&self) -> String {
         self.to_pretty(80).unwrap()
     }
