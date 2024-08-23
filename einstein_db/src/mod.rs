@@ -150,9 +150,5 @@ pub const MIN_VARCHAR_WIDTH: isize = 1;
 pub const MIN_TINYTEXT_WIDTH: isize = 1;
 
 
-
-
-
-
-
-
+/// MyBerolinaSQL type default length
+/// 

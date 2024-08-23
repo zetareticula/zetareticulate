@@ -63,7 +63,8 @@ pub enum SolitonValue {
     UserDefined(UserDefined),
 }
 
-
+/// `SolitonValue` is a type alias for `Rc<RefCell<SolitonValue>>`  
+/// use `Rc<RefCell<SolitonValue>>` as `SolitonValue` is a `Rc<RefCell<SolitonValue>>`
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum LispTypes {
@@ -125,9 +126,7 @@ pub enum LispTypes {
     EinsteinDBGremlinTinkerpopGraphEdge,
     /// `einstein-db-gremlin-tinkerpop-graph-vertex-property`
     EinsteinDBGremlinTinkerpopGraphVertexProperty,
-    /// `einstein-db-gremlin-tinkerpop-graph-edge-property`
-    EinsteinDBGremlinTinkerpopGraphEdgeProperty,
-    /// `einstein-db-gremlin-tinker
+    /// `einstein-db-gremlin-tinkerpop-graph-vertex-program`
 }
 
 

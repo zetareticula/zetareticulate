@@ -52,39 +52,10 @@ use einstein_db_ctl::{EinsteinDB, EinsteinDBError};
 use einsteindb_server::{EinsteinDBClient, EinsteinDBClientError};
 use einsteindb_server::{EinsteinDBClientErrorType, EinsteinDBClientType};
 
+use einstein_db_ffi::{einstein_db_gravity_genpk, einstein_db_gravity_genpk_from_seed};
 
 
 
-
-
-#[macro_use]
-extern crate log;
-#[macro_use]
-extern crate lazy_static;
-#[macro_use]
-extern crate bitflags;
-#[macro_use]
-extern crate bit_field;
-#[macro_use]
-extern crate cfg_if;
-#[macro_use]
-extern crate bit_slice;
-#[macro_use]
-extern crate bit_set;
-#[macro_use]
-extern crate bit_vec;
-#[macro_use]
-extern crate bit_array;
-#[macro_use]
-extern crate bit_array_derive;
-#[macro_use]
-extern crate bit_array_macro;
-#[macro_use]
-extern crate bit_array_macro_derive;
-
-
-#[macro_use]
-extern crate einstein_db_alexandrov_processing;
 
 
 
@@ -281,7 +252,6 @@ impl<'s, 'c> CausetLocaleNucleon<'s, 'c> {
 
 
 
-
 /// Simplify the limit clause.
 #[allow(dead_code)]
 fn simplify_limit_in_lightlike_variable(q: AlgebraicQuery) -> Result<AlgebraicQuery> {
@@ -381,66 +351,74 @@ pub fn einstein_db_gravity_sign_with_sources(secret: &SecretKey, query: &FindQue
 }
 
 pub fn einstein_db_gravity_verify(public:&[u8;32], msg: &[u8], sig: &[u8], sign_bytes: Vec<u8>) -> bool {
-
-
     //public key is the public key of the signer
     let pk = public_key_from_slice(public).unwrap();
-    if pk {
-        h: AlexandrovHash::new(msg).verify(sig, &pk)
-    };
+    let h = AlexandrovHash::new(&msg).verify(&sig, &pk);
+    db.verify(&pk, &msg, &sig)
+
     //msg is the message that was signed
     let msg = msg.to_vec();
+
     //sig is the signature
     let sig = Signature::from_bytes(&sig).unwrap();
+
     //let mut db = EinsteinDB::new_from_public(public);
+
     let mut db = EinsteinDB::new_from_public(public);
+
     db.add_query(&FindQuery::default()).unwrap();
     db.add_signature(&sig).unwrap();
     db.verify(&pk, &msg, &sig)
 
+    for mut causet_locale in causet_locales {
+        causet_locale.verify(&pk, &msg, &sig)
+    }
 }
 
-
-
-
 pub fn einstein_db_gravity_verify_with_sources(public:&[u8;32], msg: &[u8], sig: &[u8], sign_bytes: Vec<u8>, sources: &[Source]) -> bool {
-
     //public key is the public key of the signer
     let pk = public_key_from_slice(public).unwrap();
-    if pk {
-        h: AlexandrovHash::new(msg).verify(sig, &pk)
-    };
+    let h = AlexandrovHash::new(msg).verify(sig, &pk);
+    db.verify(&pk, &msg, &sig)
+
     //msg is the message that was signed
     let msg = msg.to_vec();
+
     //sig is the signature
     let sig = Signature::from_bytes(&sig).unwrap();
+
     //let mut db = EinsteinDB::new_from_public(public);
     let mut db = EinsteinDB::new_from_public(public);
+
     db.add_query(&FindQuery::default()).unwrap();
     db.add_signature(&sig).unwrap();
-    db.verify_with_sources(&pk, &msg, &sig, sources);
+    db.verify(&pk, &msg, &sig)
 
-        for mut causet_locale in causet_locales {
-            causet_locale.verify(&pk, &msg, &sig)
-        }
+    for mut causet_locale in causet_locales {
+        causet_locale.verify(&pk, &msg, &sig)
     }
+}
 
-        fn verify_with_sources(public: &[u8;32], msg: &[u8], sig: &[u8], sources: &[Source]) -> bool {
-            //public key is the public key of the signer
-            let pk = public_key_from_slice(public).unwrap();
-            if pk {
-                h: AlexandrovHash::new(msg).verify(sig, &pk)
-            };
-            //msg is the message that was signed
-            let msg = msg.to_vec();
-            //sig is the signature
-            let sig = Signature::from_bytes(&sig).unwrap();
-            //let mut db = EinsteinDB::new_from_public(public);
-            let mut db = EinsteinDB::new_from_public(public);
-            db.add_query(&FindQuery::default()).unwrap();
-            db.add_signature(&sig).unwrap();
-            db.verify(&pk, &msg, &sig)
-        }
+fn verify_with_sources(public: &[u8;32], msg: &[u8], sig: &[u8], sources: &[Source]) -> bool {
+    //public key is the public key of the signer
+    let pk = public_key_from_slice(public).unwrap();
+    let h = AlexandrovHash::new(msg).verify(sig, &pk);
+    db.verify(&pk, &msg, &sig)
+
+    //msg is the message that was signed
+    let msg = msg.to_vec();
+
+    //sig is the signature
+    let sig = Signature::from_bytes(&sig).unwrap();
+
+    //let mut db = EinsteinDB::new_from_public(public);
+
+    let mut db = EinsteinDB::new_from_public(public);
+
+    db.add_query(&FindQuery::default()).unwrap();
+    db.add_signature(&sig).unwrap();
+    db.verify(&pk, &msg, &sig)
+}
 
 
         fn verify_with_lamport_bolt_on_sources(public: &[u8;32], msg: &[u8], sig: &[u8]) -> bool {

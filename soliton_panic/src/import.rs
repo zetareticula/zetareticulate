@@ -147,4 +147,14 @@ impl IngestlightlikeFileOptions for PanicIngestlightlikeFileOptions {
 
 
 
-///CHANGELOG: This function is deprecated   and will be removed in the future.  Please use the new function `ingest_lightlike_file_namespaced` instead.
+pub trait IngestlightlikeFileOptions {
+    fn new() -> Self;
+
+    fn move_filefs(&self, filefs: &[&str]) -> Result<(), E>;
+
+    fn move_filefs_namespaced(&self, namespaced: &str, filefs: &[&str]) -> Result<(), E>;
+
+    fn get_write_global_seqno(&self) -> bool;
+
+    fn set_write_global_seqno(&mut self, f: bool);
+}

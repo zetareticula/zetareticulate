@@ -34,21 +34,20 @@ mod import;
 use std::path::Path;
 
 ///! Misc utilities for soliton_panic.
-
-use berolina_sql::{
-    parser::Parser,
-    value::{Value, ValueType},
-    error::{Error, Result},
-    parser::ParserError,
-    value::{ValueRef, ValueRefMut},
-    fdb_traits::FdbTrait,
-    fdb_traits::FdbTraitImpl,
-    pretty,
-    io,
-    convert::{TryFrom, TryInto},
-    ops::{Deref, DerefMut},
-    sync::{Arc, Mutex},
-};
+///! -----------------------------------------------------------------------------
+///! # Misc
+/// - [`misc`](./misc.html)
+/// - [`compact`](./compact.html)
+/// - [`causetctx_control_factors`](./causetctx_control_factors.html)
+/// - [`snapshot`](./snapshot.html)
+/// - [`import`](./import.html)
+/// - [`violetabft_engine`](./violetabft_engine.html)
+/// - [`table_properties`](./table_properties.html)
+/// - [`mvsr`](./mvsr.html)
+/// - [`violetabft_engine`](./violetabft_engine.html)
+/// - [`table_properties`](./table_properties.html)
+/// - [`mvsr`](./mvsr.html)
+/// 
 
 
 use std::collections::HashMap;
@@ -59,22 +58,16 @@ use fdb_traits::{FdbTransactional, FdbTransactionalExt};
 use allegro_poset::*;
 use std::time::Instant;
 use std::thread;
-use std::thread::JoinHandle;
-use std::thread::Thread;
-use std::thread::ThreadId;
-use std::thread::ThreadIdRange;
-use std::thread::ThreadIdRangeInner;
+use std::thread::{ThreadIdRangeInner, ThreadId, ThreadIdRange}; // Add missing import for ThreadIdRange
 
-
+use allegro_poset::*;
+use fdb_traits::*;
 use haraka256::*;
 use soliton_panic::*;
-
 
 use einstein_db::config::Config;
 use EinsteinDB::*;
 use super::*;
-
-
 
 
 use std::local_path::local_path;
@@ -137,6 +130,7 @@ pub struct TableName {
 }
 
 use itertools::Itertools;
+use crate::Parser; // Import the Parser type
 
 
 #[derive(Debug, Clone)]
@@ -1568,3 +1562,4 @@ impl FromBytes for PanicLogTopic {
                     assert_eq!(block_new, block);
 
 } // end of mod tests
+

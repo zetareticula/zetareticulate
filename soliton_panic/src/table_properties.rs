@@ -30,10 +30,10 @@ use std::time::Instant;
 use std::{thread, time};
 use std::error::Error;
 
-
 use soliton_panic::*;
 use soliton::*;
 use causal_set::CausalSet;
+use causal_set; // Add this line to import the causal_set crate
 
 pub use soliton_panic::{
     CausetPartitionerRequest,

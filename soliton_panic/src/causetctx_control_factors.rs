@@ -17,16 +17,7 @@
 
 
 
-use super::*;
-use crate::causetctx::*;
-use crate::causetctx::Causetctx::*;
-
-
-
-
 use std::collections::HashMap;
-use std::collections::HashSet;
-use std::collections::BTreeSet;
 use std::collections::BTreeMap;
 use std::collections::VecDeque;
 
@@ -56,19 +47,6 @@ use std::time::SystemTime;
 use std::time::UNIX_EPOCH;
 
 
-use std::sync::mpsc::RecvTimeoutError;
-use std::sync::mpsc::SendTimeoutError;
-use std::sync::mpsc::TryRecvTimeoutError;
-use std::sync::mpsc::TrySendTimeoutError;
-use std::sync::mpsc::RecvTimeoutError::Timeout;
-
-///! This module is used to control the causetctx_control_factors.rs module.
-/// !#[derive(Clone, Debug, PartialEq, Eq, Hash)]
-/// pub struct CausetctxControlFactors {
-///    pub causetctx_control_factors_id: String,
-///   pub causetctx_control_factors_name: String,
-///  pub causetctx_control_factors_description: String,
-
 
 #[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub struct CausetctxControlFactors {
@@ -96,14 +74,39 @@ pub struct CausetctxControlFactors {
     ///EAV = EinsteinDB Attribute-Value Causetctx Ref
     /// EAV = EinsteinDB Attribute-Value Causetctx RefCell
     pub causetctx_control_factors_value_enum_value_value_description: String,
-    pub causetctx_control_factors_value_enum_value_value_help: String,
-    pub causetctx_control_factors_value_enum_value_value_example: String,
-    ///EAV = EinsteinDB Attribute-Value Causetctx Ref
-    pub causetctx_control_factors_value_enum_value_value_value: String_causal_seting
+    pub causetctx_control_factors_value_enum_value_value_help: String
+
 }
 
-
 #[derive(Clone, Debug, PartialEq, Eq, Hash)]
+pub struct CausetctxControlFactorsStatistics {
+    pub causetctx_control_factors_id: String,
+    pub causetctx_control_factors_name: String,
+    pub causetctx_control_factors_description: String,
+    pub causetctx_control_factors_value: String,
+    pub causetctx_control_factors_value_type: String,
+    pub causetctx_control_factors_value_unit: String,
+    pub causetctx_control_factors_value_min: String,
+    pub causetctx_control_factors_value_max: String,
+    pub causetctx_control_factors_value_default: String,
+    pub causetctx_control_factors_value_description: String,
+    pub causetctx_control_factors_value_help: String,
+    pub causetctx_control_factors_value_example: String,
+    pub causetctx_control_factors_value_enum: String,
+    pub causetctx_control_factors_value_enum_description: String,
+    pub causetctx_control_factors_value_enum_help: String,
+    pub causetctx_control_factors_value_enum_example: String,
+    pub causetctx_control_factors_value_enum_value: String,
+    pub causetctx_control_factors_value_enum_value_description: String,
+    pub causetctx_control_factors_value_enum_value_help: String,
+    pub causetctx_control_factors_value_enum_value_example: String,
+    pub causetctx_control_factors_value_enum_value_value: String,
+    ///EAV = EinsteinDB Attribute-Value Causetctx Ref
+    /// EAV = EinsteinDB Attribute-Value Causetctx RefCell
+    pub causetctx_control_factors_value_enum_value_value_description: String,
+    pub causetctx_control_factors_value_enum_value_value_help: String
+    
+    }
 pub struct CausetctxControlFactorsCausalSeting {
     pub causetctx_control_factors_id: String,
     pub causetctx_control_factors_name: String,
@@ -138,6 +141,8 @@ pub struct CausetctxControlFactorsCausalSeting {
     pub causetctx_control_factors_value_enum_value_value_value: String,
     pub causetctx_control_factors_value_enum_value_value_value_description: String,
 }
+
+
 
 
 

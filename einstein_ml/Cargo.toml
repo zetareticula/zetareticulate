@@ -11,6 +11,12 @@ path = "../einstein_ml/lib.rs"
 
 [dependencies]
 num = "0.4.0"
-ordered-float = "3.0.0"
-pretty = { version = "0.11.2" }
+ordered-float = "4.2.2"
+pretty = { version = "0.12.3" }
 
+
+[workspace]
+members = [
+    "einstein_ml",
+    "einstein_ml_tests"
+]

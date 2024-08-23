@@ -70,58 +70,6 @@ macro_rules! einsteindb_macro {
 }
 
 #[macro_export]
-macro_rules! einsteindb_macro_impl {
-    ($($tokens:tt)*) => {
-        $crate::einsteindb_macro_impl!($($tokens)*)
-    };
-    ($($tokens:tt)*) => {
-        $crate::einsteindb_macro_impl!($($tokens)*)
-    };
-    ($($tokens:tt)*) => {
-        $crate::einsteindb_macro_impl!($($tokens)*)
-    };
-    ($($tokens:tt)*) => {
-        $crate::einsteindb_macro_impl!($($tokens)*)
-    };
-    ($($tokens:tt)*) => {
-        $crate::einsteindb_macro_impl!($($tokens)*)
-    };
-    ($($tokens:tt)*) => {
-        $crate::einsteindb_macro_impl!($($tokens)*)
-    };
-    ($($tokens:tt)*) => {
-        $crate::einsteindb_macro_impl!($($tokens)*)
-    };
-    ($($tokens:tt)*) => {
-        $crate::einsteindb_macro_impl!($($tokens)*)
-    };
-    ($($tokens:tt)*) => {
-        $crate::einsteindb_macro_impl!($($tokens)*)
-    };
-    ($($tokens:tt)*) => {
-        $crate::einsteindb_macro_impl!($($tokens)*)
-    };
-    ($($tokens:tt)*) => {
-        $crate::einsteindb_macro_impl!($($tokens)*)
-    };
-    ($($tokens:tt)*) => {
-        $crate::einsteindb_macro_impl!($($tokens)*)
-    };
-}
-
-
-
-#[macro_export]
-macro_rules! einsteindb_macro_impl {
-    ($($tokens:tt)*) => {
-        $crate::einsteindb_macro_impl!($($tokens)*)
-    };
-    ($($tokens:tt)*) => {
-        $crate::einsteindb_macro_impl!($($tokens)*)
-    };
-    
-
-
 use berolina_sql::{
     parser::Parser,
     value::{Value, ValueType},
@@ -186,32 +134,32 @@ impl<T: FdbTrait> EinsteinDb<T> {
         &self.db
     }
 }
-/// #### EinsteinDB
-/// `EinsteinDb` is a wrapper around `FdbTrait` that provides a simple interface to the EinsteinDB database.
-/// 
-/// ## Examples
-/// ```rust
-/// use einstein_db_alexandrov_processing::{
-///    index::{
-///       Index,
-///      IndexIterator,
-///     IndexIteratorOptions,
-/// 
-///   },    
-/// 
-/// };  
-/// 
-/// let db = EinsteinDb::new(Fdb::new());
-/// 
-/// let mut index = Index::new(&db, "test");
-/// 
-/// index.insert("test", "test");
-/// 
-/// let mut iter = index.iter(IndexIteratorOptions::new());
-/// 
-/// while let Some(value) = iter.next() {
-///    println!("{:?}", value);
-/// }
+// / #### EinsteinDB
+// / `EinsteinDb` is a wrapper around `FdbTrait` that provides a simple interface to the EinsteinDB database.
+// / 
+// / ## Examples
+// / ```rust
+// / use einstein_db_alexandrov_processing::{
+// /    index::{
+// /       Index,
+// /      IndexIterator,
+// /     IndexIteratorOptions,
+// / 
+// /   },    
+// / 
+// / };  
+// / 
+// / let db = EinsteinDb::new(Fdb::new());
+// / 
+// / let mut index = Index::new(&db, "test");
+// / 
+// / index.insert("test", "test");
+// / 
+// / let mut iter = index.iter(IndexIteratorOptions::new());
+// / 
+// / while let Some(value) = iter.next() {
+// /    println!("{:?}", value);
+// / }
 
 
 
